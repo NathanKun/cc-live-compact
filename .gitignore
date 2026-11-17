@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Scratch space: diagnostics, shims, copied sources
+tmp/
+
+# Local backups written next to config files
+*.bak
+*.bak-*
+
+# Engine-written TypeScript declarations, regenerated on load
+.claude-plugin/types/
+
+# Session state and shadow copies, if ever pointed at the repo
+state/
+shadow/
+.claude/
+.claude-plugin/installed_plugins.json
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.idea/
+.vscode/
+*.swp

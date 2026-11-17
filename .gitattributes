@@ -1,0 +1,2 @@
+# Shell scripts break under bash if a Windows checkout hands them CRLF.
+* text=auto eol=lf

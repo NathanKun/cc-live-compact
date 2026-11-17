@@ -1,0 +1,47 @@
+{
+  "name": "live-compact",
+  "version": "0.3.12",
+  "description": "Compress finished tool results in place after each turn, with no model call, leaving the prefix before the cut unchanged. Asks for a compaction through /compact, so it works in headless (SDK) hosts too.",
+  "userConfig": {
+    "enabled": {
+      "type": "boolean",
+      "description": "Cut finished tool results after each turn.",
+      "default": true,
+      "title": "Cut finished tool results"
+    },
+    "minTokens": {
+      "type": "number",
+      "description": "Context size, in tokens, above which a finished turn is cut.",
+      "default": 20000,
+      "title": "Cut threshold"
+    },
+    "keepRounds": {
+      "type": "number",
+      "description": "Newest finished tool rounds kept verbatim.",
+      "default": 3,
+      "title": "Rounds kept verbatim"
+    },
+    "chunkMin": {
+      "type": "number",
+      "description": "Smallest tool result, in tokens, worth replacing with a card.",
+      "default": 1000,
+      "title": "Smallest result to cut"
+    },
+    "pointerTokens": {
+      "type": "number",
+      "description": "Size, in tokens, at which one result becomes a pointer alone.",
+      "default": 32000,
+      "title": "Pointer threshold"
+    },
+    "bigGate": {
+      "type": "number",
+      "description": "Hard ceiling, in tokens, past which the engine's own summarizer is left to work. Below it the mod stands down at 80% of the count the engine reports it summarizes at, or at 70% of the window when it reports none.",
+      "default": 650000,
+      "title": "Official compaction gate"
+    }
+  },
+  "license": "MIT",
+  "author": {
+    "name": "live-compact contributors"
+  }
+}
