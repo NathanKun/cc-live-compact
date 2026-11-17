@@ -1,4 +1,4 @@
-# live-compact
+# cc-live-compact
 
 Cut finished tool results in place. No model call. Leave the prefix before the cut unchanged.
 
@@ -240,7 +240,7 @@ read once when the process starts. **A version written to
 
 ```sh
 ps -W | grep claude.exe                        # the engine process, and when it started
-ls -lt ~/.claude/plugins/cache/*/live-compact/ # the version directory's mtime
+ls -lt ~/.claude/plugins/cache/*/cc-live-compact/ # the version directory's mtime
 ```
 
 Seen on 0.3.12: a cut eleven minutes after the install still printed 0.3.11's
@@ -250,7 +250,7 @@ the install. The fix is a restart of the process, not a reinstall.
 Whether the source and the running copy have drifted:
 
 ```sh
-sha256sum hooks/plan.ts ~/.claude/plugins/cache/*/live-compact/*/hooks/plan.ts
+sha256sum hooks/plan.ts ~/.claude/plugins/cache/*/cc-live-compact/*/hooks/plan.ts
 ```
 
 Equal digests mean the run and the source are the same code.
@@ -423,7 +423,7 @@ To check the numbers against the copy that is actually installed, rather than
 trusting this page:
 
 ```sh
-cd ~/.claude/plugins/cache/live-compact-local/live-compact/<version>/hooks
+cd ~/.claude/plugins/cache/live-compact-local/cc-live-compact/<version>/hooks
 node --experimental-strip-types -e '
 import { estimateTokens, cardText, POINTER_TOKENS } from "./plan.ts";
 const shape = n => Array.from({ length: Math.ceil(n / 26) }, () => "测".repeat(39)).join("\n");
@@ -452,27 +452,32 @@ second one.
 
 ## Installing
 
-In a session:
+The repository carries its own `.claude-plugin/marketplace.json`, so a clone is
+both a plugin and a marketplace. In a session:
 
 ```
-/plugin install live-compact@live-compact-local
+/plugin marketplace add <owner>/cc-live-compact
+/plugin install cc-live-compact@cc-live-compact
 ```
 
-From a shell, with the marketplace one level up (`../.claude-plugin/marketplace.json`):
+From a shell, against a clone:
 
 ```sh
-claude plugin marketplace add ../            # the folder holding .claude-plugin/
-claude plugin install live-compact@live-compact-local -y --scope user
+claude plugin marketplace add /path/to/cc-live-compact
+claude plugin install cc-live-compact@cc-live-compact -y --scope user
 ```
 
-That folder is whichever directory holds `.claude-plugin/` — here, the parent of
-this repository.
-
-While developing, load it from disk instead:
+While developing, load it from disk without installing:
 
 ```sh
-claude --plugin-dir /path/to/live-compact
+claude --plugin-dir /path/to/cc-live-compact
 ```
+
+Type checking needs one load first. `hooks/*.ts` import the engine's
+`claude-code` module from `.claude-plugin/types/`, which the engine writes when
+the plugin loads and which `.gitignore` excludes. On a fresh clone `tsc` cannot
+resolve that module until the plugin has been installed and loaded once; the
+runtime is unaffected either way.
 
 ## What it does not cover
 
@@ -505,6 +510,11 @@ The engine runs that command once the session is idle, the event comes back as
 `session.compact` with `trigger: "manual"`, and the marker in `instructions`
 tells this mod's ask from a `/compact` someone typed — anyone else's goes to
 core's summarizer, untouched.
+
+The workaround is not original here:
+[cc-autocompact](https://github.com/TrenzDev/cc-autocompact) queues `/compact`
+the same way after meeting the identical `HooksError`, and this mod took the
+approach from it.
 
 The hook then answers `{ messages }` itself instead of calling `next`, so no
 summarizer is sent: the conversation becomes the cut one, and the rows before
@@ -547,7 +557,7 @@ turn that was passed over can be explained afterwards without a log.
 In a real SDK-hosted session on engine 2.1.321 (2026-11-16), unprompted:
 
 - the trigger asked by itself; the transcript row for the `/compact` carries
-  `origin: {"kind":"plugin","name":"live-compact"}`, so it was the mod, not a
+  `origin: {"kind":"plugin","name":"cc-live-compact"}`, so it was the mod, not a
   person;
 - the hook answered with two cuts (a file read and a command dump), both
   originals landed under `shadow/`, and the rows in the transcript carry the

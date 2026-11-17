@@ -1,0 +1,14 @@
+{
+  "name": "cc-live-compact",
+  "owner": {
+    "name": "cc-live-compact contributors"
+  },
+  "description": "Cut finished tool results in place after each turn, with no model call.",
+  "plugins": [
+    {
+      "name": "cc-live-compact",
+      "source": "./",
+      "description": "Compress finished tool results in place after each turn, with no model call, leaving the prefix before the cut unchanged."
+    }
+  ]
+}
